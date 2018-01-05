@@ -13,13 +13,10 @@ namespace Minigame {
         [SerializeField] private float timeBetweenSpawnsMin = 1, timeBetweenSpawnsMax = 2;
         [SerializeField] private float spawnDistanceFromCentre = 5;
 
-        public List<Resource> Resources { get; private set; }
-
         private float spawnTimer;
 
         private void Awake() {
             instance = this;
-            Resources = new List<Resource>();
         }
 
         private void Update() {
@@ -39,10 +36,6 @@ namespace Minigame {
             rndSpawnLocation.x += Random.Range(-spawnDistanceFromCentre, spawnDistanceFromCentre);
             Resource r = Instantiate(resourcePrefabs.GetRandom(), rndSpawnLocation, Random.rotation);
             Resources.Add(r);
-        }
-
-        public void RemoveResource(Resource r) {
-            Resources.Remove(r);
         }
 
         private void OnDrawGizmos() {

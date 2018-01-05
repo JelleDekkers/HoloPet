@@ -19,8 +19,13 @@ public class Pathfinder : MonoBehaviour {
         spline.InsertNewPointAtWorldPosition(spline.Count, pos);
         spline.RemovePointAt(0);
         walker.ResetProgress();
-
         //CreateVisualMesh();
+    }
+
+    public void SetNewTargetAnticipatingObjectPosition(Transform target, Vector3 direction, float speed) {
+        float travelTime = spline.Length / walker.movementSpeed;
+        Vector3 futurePosition = target.transform.position + (direction * (speed * travelTime));
+        SetNewTargetPosition(futurePosition);
     }
 
     private void CreateVisualMesh(Vector3 pos) {

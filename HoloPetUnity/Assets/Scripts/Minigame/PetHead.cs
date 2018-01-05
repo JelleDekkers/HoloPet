@@ -75,6 +75,8 @@ namespace Minigame {
 
             if (movingForward) {
                 if (progress >= 1f - relaxationAtEndPoints) {
+                    //Debug.Log("end: " + Time.time);
+
                     if (travelMode == TravelMode.Once)
                         progress = 1f;
                     else if (travelMode == TravelMode.Loop)

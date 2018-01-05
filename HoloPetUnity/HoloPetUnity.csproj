@@ -78,12 +78,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Common.cs" />
     <Compile Include="Assets\Scripts\Extensions.cs" />
     <Compile Include="Assets\Scripts\Minigame\Pathfinder.cs" />
     <Compile Include="Assets\Scripts\Minigame\PetHead.cs" />
     <Compile Include="Assets\Scripts\Minigame\PetMiniGameController.cs" />
     <Compile Include="Assets\Scripts\Minigame\Resources\Resource.cs" />
     <Compile Include="Assets\Scripts\Minigame\Resources\ResourceSpawner.cs" />
+    <Compile Include="Assets\Scripts\Minigame\Resources\Resources.cs" />
     <Compile Include="Assets\Scripts\Minigame\SpeechManager.cs" />
     <Compile Include="Assets\Scripts\Movement\PetLimb.cs" />
     <Compile Include="Assets\Scripts\Pet.cs" />

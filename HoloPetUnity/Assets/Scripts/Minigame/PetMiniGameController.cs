@@ -16,6 +16,7 @@ namespace Minigame {
 
         [SerializeField] private float directMovementDistance = 5;
         [SerializeField] private Pathfinder pathfinder;
+        [SerializeField] private float maxFindingDistance = 5;
 
         [Tooltip("Commands for direct movements, such as: 'Go Left'")]
         [SerializeField] private string[] directMovementCommands;
@@ -102,10 +103,27 @@ namespace Minigame {
 
         private void NearestMoveCommandRecieved(string command) {
             Debug.Log("nearest movement command keyword: " + command);
+            Direction dirEnum = GetDirectionFromCommand(command);
+            if (dirEnum == Direction.up || dirEnum == Direction.down)
+                return;
+
+            Resource closestResource = Resources.GetNearestResourceHorizontal(transform, dirEnum == Direction.right);
+
+            if (closestResource != null && Vector3.Distance(head.transform.position, closestResource.transform.position) < maxFindingDistance)
+                pathfinder.SetNewTargetAnticipatingObjectPosition(closestResource.transform, closestResource.movementDirection, closestResource.movementSpeed);
+            else
+                Debug.Log("No resource to the " + dirEnum.ToString() + " found within range");
         }
 
         private void NearestColorCommandRecieved(string command) {
             Debug.Log("nearest color command keyword: " + command);
+            EmotionColor color = GetColorEmotionFromCommand(command);
+            Resource closestResource = Resources.GetNearestResourceWithColor(color, head.transform.position);
+
+            if (closestResource != null && Vector3.Distance(head.transform.position, closestResource.transform.position) < maxFindingDistance)
+                pathfinder.SetNewTargetAnticipatingObjectPosition(closestResource.transform, closestResource.movementDirection, closestResource.movementSpeed);
+            else
+                Debug.Log("No resource with " + color.ToString() + " found within range");
         }
 
         private void MotivationalCommandRecieved(string command) {

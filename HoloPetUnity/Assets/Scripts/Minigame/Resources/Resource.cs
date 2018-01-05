@@ -18,8 +18,8 @@ namespace Minigame {
 
     public class Resource : MonoBehaviour {
 
-        [SerializeField] private Vector3 movementDirection;
-        [SerializeField] private float movementSpeed = 1;
+        public Vector3 movementDirection;
+        public float movementSpeed = 1;
         [SerializeField] private float eatDuration = 0.5f;
 
         private bool hasBeenVisible;
@@ -45,7 +45,7 @@ namespace Minigame {
                 yield return null;
             }
 
-            ResourceSpawner.Instance.RemoveResource(this);
+            Resources.Remove(this);
             Destroy(gameObject);
         }
 
