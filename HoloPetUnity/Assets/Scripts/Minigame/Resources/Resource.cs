@@ -2,45 +2,61 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Resource : MonoBehaviour {
+public enum Emotion {
+    Happy = 0,
+    Sad = 1,
+    Angry = 2
+}
 
-    [SerializeField] private Vector2 movementDirection;
-    [SerializeField] private float movementSpeed = 1;
-    [SerializeField] private float eatDuration = 0.5f;
+public enum EmotionColor {
+    Blue = 0,
+    Yellow = 1,
+    Red = 2
+}
 
-    private bool hasBeenVisible;
+namespace Minigame {
 
-    public Emotion emotion = Emotion.Happy;
-    public int energyValue = 10;
+    public class Resource : MonoBehaviour {
 
-    public void Update() {
-        transform.Translate(movementDirection * movementSpeed * Time.deltaTime, Space.World);
-    }
-    
-    public IEnumerator GetEaten() {
-        Vector3 start = transform.localScale;
-        Vector3 target = new Vector3(0.1f, 0.1f, 0.1f);
-        float timer = 0;
+        [SerializeField] private Vector3 movementDirection;
+        [SerializeField] private float movementSpeed = 1;
+        [SerializeField] private float eatDuration = 0.5f;
 
-        while(timer < eatDuration) {
-            transform.localScale = Vector3.Lerp(start, target, timer / eatDuration);
-            timer += Time.deltaTime;
+        private bool hasBeenVisible;
 
-            yield return null;
+        public Emotion emotion = Emotion.Happy;
+        public int energyValue = 10;
+
+        public void Update() {
+            transform.Translate(movementDirection * movementSpeed * Time.deltaTime, Space.World);
         }
 
-        Destroy(gameObject);
-    }
+        public IEnumerator GetEaten() {
+            Vector3 start = transform.localScale;
+            Vector3 target = new Vector3(0.1f, 0.1f, 0.1f);
+            float timer = 0;
 
-    private void OnBecameVisible() {
-        hasBeenVisible = true;
-    }
+            GetComponent<BoxCollider>().enabled = false;
 
-    private void OnBecameInvisible() {
-        if (!hasBeenVisible)
-            return;
+            while (timer < eatDuration) {
+                transform.localScale = Vector3.Lerp(start, target, timer / eatDuration);
+                timer += Time.deltaTime;
 
-        Debug.Log(name + " became invisible from camera, destroy() called");
-        Destroy(gameObject);
+                yield return null;
+            }
+
+            ResourceSpawner.Instance.RemoveResource(this);
+            Destroy(gameObject);
+        }
+
+        private void OnBecameVisible() {
+            hasBeenVisible = true;
+        }
+
+        private void OnBecameInvisible() {
+            if (!hasBeenVisible)
+                return;
+            Destroy(gameObject);
+        }
     }
 }

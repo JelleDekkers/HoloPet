@@ -2,28 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PetLimb : MonoBehaviour {
+namespace Minigame {
 
-    private Pet controller;
-    private Transform parent;
-    private float maxDistance;
-    private Quaternion initialRotation;
+    public class PetLimb : MonoBehaviour {
 
-    private void Start() {
-        maxDistance = Vector3.Distance(transform.position, parent.position);
-        initialRotation = transform.rotation;
-    }
+        [SerializeField]
+        private float followSpeed = 20;
 
-    public void Init(Pet controller, Transform parent) {
-        this.controller = controller;
-        this.parent = parent;
-    }
+        private Transform parent;
+        private float maxDistance;
+        private Quaternion initialRotation;
 
-    private void Update() {
-        if (Vector3.Distance(transform.position, parent.position) > maxDistance) {
-            transform.position = Vector3.Lerp(transform.position, parent.position, controller.movementSpeed * Time.deltaTime);
-            transform.LookAt(parent);
-            transform.rotation *= initialRotation;
+        private void Start() {
+            maxDistance = Vector3.Distance(transform.position, parent.position);
+            initialRotation = transform.rotation;
+        }
+
+        public void Init(Transform parent) {
+            this.parent = parent;
+        }
+
+        private void Update() {
+            if (Vector3.Distance(transform.position, parent.position) > maxDistance) {
+                transform.position = Vector3.Lerp(transform.position, parent.position, followSpeed * Time.deltaTime);
+                transform.LookAt(parent);
+                transform.rotation *= initialRotation;
+
+                //var lookPos = parent.position - transform.position;
+                //lookPos.x = 0;
+                //var rotation = Quaternion.LookRotation(lookPos);
+                //transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 2);
+            }
         }
     }
 }

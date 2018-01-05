@@ -1,10 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Minigame;
 
 public class Pet : MonoBehaviour {
-
-    public float movementSpeed = 5;
 
     private static Pet instance;
     public static Pet Instance {
@@ -14,6 +13,8 @@ public class Pet : MonoBehaviour {
             return instance;
         }
     }
+
+    public PetHead Head { get; private set; }
 
     public int happyCountNeededToWin = 10;
     public Emotion currentEmotion;
@@ -26,8 +27,10 @@ public class Pet : MonoBehaviour {
 
     private void Start() {
         Transform[] bones = transform.GetChild(0).parent.GetComponentsInChildren<Transform>();
+        Head = transform.GetChild(0).GetComponent<PetHead>();
+
         for (int i = 2; i < bones.Length; i++) {
-            bones[i].gameObject.AddComponent<PetLimb>().Init(this, bones[i - 1]);
+            bones[i].gameObject.AddComponent<PetLimb>().Init(bones[i - 1]);
         }
     }
 
