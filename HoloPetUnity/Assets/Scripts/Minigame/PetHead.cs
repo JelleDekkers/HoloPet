@@ -9,6 +9,9 @@ namespace Minigame {
         public float MovementSpeed { get; set; }
         public float movementBaseSpeed = 3f;
 
+        [SerializeField][Tooltip("Set to true if limbs do not have joints")]
+        private bool generateLimbComponentsOnChilds;
+
         public enum TravelMode { Once, Loop, PingPong };
         public BezierSpline spline;
         public TravelMode travelMode;
@@ -39,12 +42,15 @@ namespace Minigame {
         }
 
         private void Start() {
-            initialRotation = transform.rotation;
+            initialRotation = transform.parent.rotation;
             Transform[] bones = transform.parent.GetComponentsInChildren<Transform>();
 
-            for (int i = 2; i < bones.Length; i++) {
-                bones[i].gameObject.AddComponent<PetLimb>().Init(bones[i - 1]);
+            if (generateLimbComponentsOnChilds) {
+                for (int i = 3; i < bones.Length; i++) {
+                    bones[i].gameObject.AddComponent<PetLimb>().Init(bones[i - 1]);
+                }
             }
+            transform.GetChild(0).localRotation = Quaternion.Euler(new Vector3(90, 0, 90));
         }
 
         private void OnTriggerEnter(Collider other) {
@@ -72,17 +78,19 @@ namespace Minigame {
             if (lookForward) {
                 Quaternion targetRotation;
                 if (movingForward) {
-                    targetRotation = Quaternion.LookRotation(spline.GetTangent(progress));
-                    targetRotation *= initialRotation;
-                } else
+                    Vector3 lookRotation = spline.GetTangent(progress);
+                    //lookRotation.x -= 90;
+                    targetRotation = Quaternion.LookRotation(lookRotation);
+                } else {
                     targetRotation = Quaternion.LookRotation(-spline.GetTangent(progress));
-
-                cachedTransform.rotation = Quaternion.Lerp(cachedTransform.rotation, targetRotation, rotationLerpModifier * Time.deltaTime);
+                }
+                cachedTransform.rotation = targetRotation;
+                //cachedTransform.localRotation = Quaternion.Lerp(cachedTransform.rotation, targetRotation, rotationLerpModifier * Time.deltaTime);
+                //transform.localRotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, 0));
             }
 
             if (movingForward) {
                 if (progress >= 1f - relaxationAtEndPoints) {
-                    //Debug.Log("end: " + Time.time);
 
                     if (travelMode == TravelMode.Once)
                         progress = 1f;
