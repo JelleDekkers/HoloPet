@@ -40,6 +40,11 @@ namespace Minigame {
 
         private void Start() {
             initialRotation = transform.rotation;
+            Transform[] bones = transform.parent.GetComponentsInChildren<Transform>();
+
+            for (int i = 2; i < bones.Length; i++) {
+                bones[i].gameObject.AddComponent<PetLimb>().Init(bones[i - 1]);
+            }
         }
 
         private void OnTriggerEnter(Collider other) {

@@ -28,12 +28,7 @@ public class Pet : MonoBehaviour {
     }
 
     private void Start() {
-        Transform[] bones = transform.GetChild(0).parent.GetComponentsInChildren<Transform>();
         Head = transform.GetChild(0).GetComponent<PetHead>();
-
-        for (int i = 2; i < bones.Length; i++) {
-            bones[i].gameObject.AddComponent<PetLimb>().Init(bones[i - 1]);
-        }
     }
 
     public void CollectResource(Resource resource) {
