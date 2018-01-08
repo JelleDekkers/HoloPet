@@ -14,6 +14,7 @@ namespace Minigame {
 
     public class PetMiniGameController : MonoBehaviour {
 
+        [SerializeField] private PetHead head;
         [SerializeField] private float directMovementDistance = 5;
         [SerializeField] private Pathfinder pathfinder;
         [SerializeField] private float maxFindingDistance = 5;
@@ -24,42 +25,53 @@ namespace Minigame {
         [SerializeField] private string[] nearestMovementCommands;
         [Tooltip("Commands for the nearest color, such as: 'get the blue one'")]
         [SerializeField] private string[] nearestColorCommands;
+        [Tooltip("Commands for the nearest resource")]
+        [SerializeField] private string[] nearestResourceCommands;
         [Tooltip("Motivational Commands such as 'Good Job'")]
         [SerializeField] private string[] motivationalCommands;
         [Tooltip("Punishing Commands such as 'No'")]
         [SerializeField] private string[] punishingCommands;
+        [Tooltip("Misc commands")]
+        [SerializeField] private VoiceCommand[] miscCommands;
 
         private const string COMMAND_KEYWORD = "<>";
         private SpeechManager speechManager;
-        private PetHead head;
 
         private Vector3[] directions = { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
         private List<string> directionalMovementCommandsList;
         private List<string> nearestMovementCommandsList;
         private List<string> nearestColorCommandsList;
 
+        public string[] commands;
+
         private void Start() {
+            commands = GetAllKeywords();
             speechManager = new SpeechManager(GetAllKeywords());
-            speechManager.OnPhraseRecognized += ParseCommand;
-            head = transform.GetChild(0).GetComponent<PetHead>();
+            speechManager.OnPhraseRecognized += ParseCommandToKeyword;
         }
 
         private string[] GetAllKeywords() {
             List<string> keywords = new List<string>();
 
-            directionalMovementCommandsList = ParseCommandsToKeywords(directMovementCommands, new Direction());
+            directionalMovementCommandsList = ParseKeywordsToCommands(directMovementCommands, new Direction());
             keywords.AddRange(directionalMovementCommandsList);
-            nearestMovementCommandsList = ParseCommandsToKeywords(nearestMovementCommands, new Direction());
+            nearestMovementCommandsList = ParseKeywordsToCommands(nearestMovementCommands, new Direction());
             keywords.AddRange(nearestMovementCommandsList);
-            nearestColorCommandsList = ParseCommandsToKeywords(nearestColorCommands, new EmotionColor());
-            keywords.AddRange(nearestColorCommandsList);
+            //nearestColorCommandsList = ParseCommandsToKeywords(nearestColorCommands, new EmotionColor());
+            //keywords.AddRange(nearestColorCommandsList);
+
+            keywords.AddRange(nearestResourceCommands);
 
             keywords.AddRange(motivationalCommands);
             keywords.AddRange(punishingCommands);
+            
+            foreach(VoiceCommand v in miscCommands) 
+                keywords.Add(v.command);
+
             return keywords.ToArray();
         }
 
-        private List<string> ParseCommandsToKeywords(string[] commands, Enum enumType) {
+        private List<string> ParseKeywordsToCommands(string[] commands, Enum enumType) {
             List<string> keywords = new List<string>();
             int count = Enum.GetNames(enumType.GetType()).Length;
             foreach (string s in commands) {
@@ -76,21 +88,29 @@ namespace Minigame {
             return keywords;
         }
 
-        private void ParseCommand(string text) {
+        private void ParseCommandToKeyword(string text) {
             Debug.Log("Command: <b>" + text + "</b>");
 
             if (directionalMovementCommandsList.Contains(text))
                 DirectMoveCommandRecieved(text);
             else if (nearestMovementCommandsList.Contains(text))
                 NearestMoveCommandRecieved(text);
-            else if (nearestColorCommandsList.Contains(text))
-                NearestColorCommandRecieved(text);
+            else if (nearestResourceCommands.Contains(text))
+                NearestResourceCommandRecieved(text);
+            //else if (nearestColorCommandsList.Contains(text))
+            //    NearestColorCommandRecieved(text);
             else if (motivationalCommands.Contains(text))
                 MotivationalCommandRecieved(text);
             else if (punishingCommands.Contains(text))
                 PunishingCommandRecieved(text);
-            else
-                Debug.LogWarning("No corresponding command found for " + text);
+            else {
+                VoiceCommand misc;
+                if (MiscCommandsContains(text, out misc)) {
+                    misc.onCommandRecieved.Invoke();
+                } else {
+                    Debug.LogWarning("No corresponding command found for " + text);
+                }
+            }
         }
 
         private void DirectMoveCommandRecieved(string command) {
@@ -114,6 +134,18 @@ namespace Minigame {
             else
                 Debug.Log("No resource to the " + dirEnum.ToString() + " found within range");
         }
+
+        private void NearestResourceCommandRecieved(string command) {
+            Debug.Log("nearest resource command keyword: " + command);
+
+            Resource closestResource = Resources.GetNearestResource(head.transform);
+
+            if (closestResource != null && Vector3.Distance(head.transform.position, closestResource.transform.position) < maxFindingDistance)
+                pathfinder.SetNewTargetAnticipatingObjectPosition(closestResource.transform, closestResource.movementDirection, closestResource.movementSpeed);
+            else
+                Debug.Log("No resource found within range");
+        }
+
 
         private void NearestColorCommandRecieved(string command) {
             Debug.Log("nearest color command keyword: " + command);
@@ -153,5 +185,36 @@ namespace Minigame {
             Debug.LogWarning("No emotionColor found in " + text);
             return EmotionColor.Blue;
         }
+
+        public void StopMoving() {
+            pathfinder.Stop();
+        }
+
+        public void QuitMiniGame() {
+            throw new NotImplementedException();
+        }
+
+        public bool MiscCommandsContains(string s, out VoiceCommand command) {
+            foreach (VoiceCommand v in miscCommands) {
+                if (v.command.Contains(s)) {
+                    command = v;
+                    return true;
+                }
+            }
+            command = null;
+            return false;
+        }
+
+        private void OnDrawGizmos() {
+            Gizmos.DrawWireCube(head.transform.position, new Vector3(directMovementDistance * 2, 0, directMovementDistance * 2));
+            UnityEditor.Handles.DrawWireArc(head.transform.position, head.transform.up, -head.transform.right, 360, maxFindingDistance);
+        }
+    }
+
+    [Serializable]
+    public class VoiceCommand {
+
+        public string command;
+        public UnityEngine.Events.UnityEvent onCommandRecieved;
     }
 }

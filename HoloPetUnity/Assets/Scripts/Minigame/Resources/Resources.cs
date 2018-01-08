@@ -25,6 +25,19 @@ namespace Minigame {
             AllResources = null;
         }
 
+        public static Resource GetNearestResource(Transform t) {
+            float closestDist = Mathf.Infinity;
+            Resource closestResource = null;
+            foreach (Resource r in allResources) {
+                float dist = Vector3.Distance(r.transform.position, t.position);
+                if (dist < closestDist) {
+                    closestDist = dist;
+                    closestResource = r;
+                }
+            }
+            return closestResource;
+        }
+
         public static Resource GetNearestResourceWithColor(EmotionColor color, Vector3 position) {
             Emotion correspondingEmotion = (Emotion)((int)color);
             List<Resource> resourcesWithCorrespondingColor = AllResources.Where(x => x.emotion == correspondingEmotion).ToList();

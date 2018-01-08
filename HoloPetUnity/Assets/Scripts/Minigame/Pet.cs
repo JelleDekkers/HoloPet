@@ -16,7 +16,9 @@ public class Pet : MonoBehaviour {
 
     public PetHead Head { get; private set; }
 
-    public int happyCountNeededToWin = 10;
+    public int happyCountNeededToWin = 6;
+    public int angryCountLoseGame = 6;
+    public int sadCountLoseGame = 6;
     public Emotion currentEmotion;
     public int currentEmotionCount;
     public float currentEnergy;
@@ -37,13 +39,34 @@ public class Pet : MonoBehaviour {
     public void CollectResource(Resource resource) {
         StartCoroutine(resource.GetEaten());
 
-        if (resource.emotion == currentEmotion) { 
-            currentEmotion++;
+        if (resource.emotion == currentEmotion) {
+            currentEmotionCount++;
+
+            if (currentEmotion == Emotion.Happy && currentEmotionCount == happyCountNeededToWin)
+                GameWon();
+            //else if (currentEmotion == Emotion.Angry && currentEmotionCount == angryCountLoseGame)
+            //    GameLostAngry();
+            //else if (currentEmotion == Emotion.Sad && currentEmotionCount == sadCountLoseGame)
+            //    GameLostSad();
+
         } else {
             currentEmotion = resource.emotion;
             currentEmotionCount = 1;
+            currentEnergy = resource.energyValue;
         }
 
-        currentEnergy += resource.energyValue;
+        Head.MovementSpeed = resource.energyValue;
+    }
+
+    private void GameWon() {
+        Debug.Log("Game Won Happy");
+    }
+
+    private void GameLostAngry() {
+        Debug.Log("Game Lost Angry");
+    }
+
+    private void GameLostSad() {
+        Debug.Log("Game Lost Sad");
     }
 }

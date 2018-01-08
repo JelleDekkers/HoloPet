@@ -6,8 +6,13 @@ using Minigame;
 
 public class Pathfinder : MonoBehaviour {
 
-    public BezierSpline spline;
-    public PetHead walker;
+    [SerializeField] private BezierSpline spline;
+    [SerializeField] private PetHead walker;
+    [SerializeField] private float minDistanceForExtraSplinePoint = 3f;
+    [SerializeField] private float middleSplineLengthModifierMax = 0.4f;
+    [SerializeField] private float middleSplineAngleEmotionHappyModifier = 30;
+
+    private Animator animator;
 
     private void Update() {
         if(Input.GetMouseButtonDown(0))
@@ -15,26 +20,51 @@ public class Pathfinder : MonoBehaviour {
     }
 
     public void SetNewTargetPosition(Vector3 pos) {
+        walker.enabled = true;
         spline.endPoints[spline.Count - 1].position = Pet.Instance.Head.transform.position;
-        spline.InsertNewPointAtWorldPosition(spline.Count, pos);
+        BezierPoint p = spline.InsertNewPointAtWorldPosition(spline.Count, pos);
+        
+        Quaternion lookRot = Quaternion.LookRotation(p.position - walker.transform.position, Vector3.forward);
+        Vector3 conversion = new Vector3(0, lookRot.eulerAngles.y - 90, 0);
+        p.rotation = Quaternion.Euler(conversion);
+
         spline.RemovePointAt(0);
+        if(spline.Count > 2)
+            spline.RemovePointAt(0);
+
+        if (Vector3.Distance(walker.transform.position, p.position) > minDistanceForExtraSplinePoint) {
+            p = spline.InsertNewPointAt(1);
+            float splineLength = spline.Length * middleSplineLengthModifierMax;
+            p.precedingControlPointLocalPosition = new Vector3(splineLength, p.precedingControlPointLocalPosition.y, p.precedingControlPointLocalPosition.z);
+            lookRot = Quaternion.LookRotation(p.position - walker.transform.position, Vector3.forward);
+            float angleModifier = 0;
+            if (Pet.Instance.currentEmotion == Emotion.Happy)
+                angleModifier = middleSplineAngleEmotionHappyModifier;
+            conversion = new Vector3(0, (lookRot.eulerAngles.y + 90) + angleModifier, 0);
+            p.rotation = Quaternion.Euler(conversion);
+        }
         walker.ResetProgress();
-        //CreateVisualMesh();
+    }
+
+    public void Stop() {
+        walker.enabled = false;
+   
     }
 
     public void SetNewTargetAnticipatingObjectPosition(Transform target, Vector3 direction, float speed) {
-        float travelTime = spline.Length / walker.movementSpeed;
+        float travelTime = spline.Length / walker.MovementSpeed;
         Vector3 futurePosition = target.transform.position + (direction * (speed * travelTime));
         SetNewTargetPosition(futurePosition);
     }
 
-    private void CreateVisualMesh(Vector3 pos) {
+    private GameObject CreateVisualMesh(Vector3 pos) {
         GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);
         pos.y = -0.3f;
         g.GetComponent<Renderer>().material.color = Color.black;
         g.transform.position = pos;
         g.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
         Destroy(g.GetComponent<Collider>());
+        return g;
     }
 
     public const float MAX_RAY_DISTANCE = 100000f;

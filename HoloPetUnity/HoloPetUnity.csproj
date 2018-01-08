@@ -81,6 +81,7 @@
     <Compile Include="Assets\Scripts\Common.cs" />
     <Compile Include="Assets\Scripts\Extensions.cs" />
     <Compile Include="Assets\Scripts\Minigame\Pathfinder.cs" />
+    <Compile Include="Assets\Scripts\Minigame\Pet.cs" />
     <Compile Include="Assets\Scripts\Minigame\PetHead.cs" />
     <Compile Include="Assets\Scripts\Minigame\PetMiniGameController.cs" />
     <Compile Include="Assets\Scripts\Minigame\Resources\Resource.cs" />
@@ -88,7 +89,6 @@
     <Compile Include="Assets\Scripts\Minigame\Resources\Resources.cs" />
     <Compile Include="Assets\Scripts\Minigame\SpeechManager.cs" />
     <Compile Include="Assets\Scripts\Movement\PetLimb.cs" />
-    <Compile Include="Assets\Scripts\Pet.cs" />
     <Compile Include="Assets\Scripts\SpeechRecognitionEngine.cs" />
     <Compile Include="Assets\Third Party\BezierSolution\BezierPoint.cs" />
     <Compile Include="Assets\Third Party\BezierSolution\BezierSpline.cs" />

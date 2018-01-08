@@ -6,7 +6,8 @@ namespace Minigame {
 
     public class PetHead : MonoBehaviour {
 
-        public float movementSpeed = 5f;
+        public float MovementSpeed { get; set; }
+        public float movementBaseSpeed = 3f;
 
         public enum TravelMode { Once, Loop, PingPong };
         public BezierSpline spline;
@@ -34,6 +35,7 @@ namespace Minigame {
 
         void Awake() {
             cachedTransform = transform;
+            MovementSpeed = movementBaseSpeed;
         }
 
         private void Start() {
@@ -46,8 +48,8 @@ namespace Minigame {
         }
 
         void Update() {
-            float absSpeed = Mathf.Abs(movementSpeed);
-            float targetSpeed = (isGoingForward) ? movementSpeed : -movementSpeed;
+            float absSpeed = Mathf.Abs(MovementSpeed);
+            float targetSpeed = (isGoingForward) ? MovementSpeed : -MovementSpeed;
 
             Vector3 targetPos;
             if (absSpeed <= 2f)
@@ -60,7 +62,7 @@ namespace Minigame {
             cachedTransform.position = targetPos;
             //cachedTransform.position = Vector3.Lerp( cachedTransform.position, targetPos, movementLerpModifier * Time.deltaTime );
 
-            bool movingForward = (movementSpeed > 0f) == isGoingForward;
+            bool movingForward = (MovementSpeed > 0f) == isGoingForward;
 
             if (lookForward) {
                 Quaternion targetRotation;
