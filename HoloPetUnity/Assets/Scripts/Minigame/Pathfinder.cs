@@ -51,11 +51,11 @@ public class Pathfinder : MonoBehaviour {
    
     }
 
-    public void SetNewTargetAnticipatingObjectPosition(Transform target, Vector3 direction, float speed) {
-        float travelTime = spline.Length / walker.MovementSpeed;
-        Vector3 futurePosition = target.transform.position + (direction * (speed * travelTime));
-        SetNewTargetPosition(futurePosition);
-    }
+    //public void SetNewTargetAnticipatingObjectPosition(Transform target, Vector3 direction, float speed) {
+    //    float travelTime = spline.Length / walker.MovementSpeed;
+    //    Vector3 futurePosition = target.transform.position + (direction * (speed * travelTime));
+    //    SetNewTargetPosition(futurePosition);
+    //}
 
     private GameObject CreateVisualMesh(Vector3 pos) {
         GameObject g = GameObject.CreatePrimitive(PrimitiveType.Cube);

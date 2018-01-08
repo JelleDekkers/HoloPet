@@ -11,7 +11,8 @@ namespace Minigame {
 
         [SerializeField] private Resource[] resourcePrefabs;
         [SerializeField] private float timeBetweenSpawnsMin = 1, timeBetweenSpawnsMax = 2;
-        [SerializeField] private float spawnDistanceFromCentre = 5;
+
+        [SerializeField] private Vector3 range = new Vector3(3, 3, 3);
 
         private float spawnTimer;
 
@@ -33,14 +34,15 @@ namespace Minigame {
 
         private void SpawnResourceAtRandomPosition() {
             Vector3 rndSpawnLocation = transform.position;
-            rndSpawnLocation.x += Random.Range(-spawnDistanceFromCentre, spawnDistanceFromCentre);
+            rndSpawnLocation.x += Random.Range(-range.x / 2, range.x / 2);
+            rndSpawnLocation.y += Random.Range(-range.y / 2, range.y / 2);
+            rndSpawnLocation.z += Random.Range(-range.z / 2, range.z / 2);
             Resource r = Instantiate(resourcePrefabs.GetRandom(), rndSpawnLocation, Random.rotation);
             Resources.Add(r);
         }
 
         private void OnDrawGizmos() {
-            Gizmos.DrawLine(new Vector3(transform.position.x - spawnDistanceFromCentre, transform.position.y, transform.position.z),
-                            new Vector3(transform.position.x + spawnDistanceFromCentre, transform.position.y, transform.position.z));
+            Gizmos.DrawWireCube(transform.position, range);
         }
     }
 }

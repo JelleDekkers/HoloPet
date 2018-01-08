@@ -32,7 +32,7 @@ public class Pet : MonoBehaviour {
     }
 
     public void CollectResource(Resource resource) {
-        StartCoroutine(resource.GetEaten());
+        StartCoroutine(resource.DestroyObject());
 
         if (resource.emotion == currentEmotion) {
             currentEmotionCount++;

@@ -130,7 +130,7 @@ namespace Minigame {
             Resource closestResource = Resources.GetNearestResourceHorizontal(transform, dirEnum == Direction.right);
 
             if (closestResource != null && Vector3.Distance(head.transform.position, closestResource.transform.position) < maxFindingDistance)
-                pathfinder.SetNewTargetAnticipatingObjectPosition(closestResource.transform, closestResource.movementDirection, closestResource.movementSpeed);
+                pathfinder.SetNewTargetPosition(closestResource.transform.position);
             else
                 Debug.Log("No resource to the " + dirEnum.ToString() + " found within range");
         }
@@ -141,7 +141,7 @@ namespace Minigame {
             Resource closestResource = Resources.GetNearestResource(head.transform);
 
             if (closestResource != null && Vector3.Distance(head.transform.position, closestResource.transform.position) < maxFindingDistance)
-                pathfinder.SetNewTargetAnticipatingObjectPosition(closestResource.transform, closestResource.movementDirection, closestResource.movementSpeed);
+                pathfinder.SetNewTargetPosition(closestResource.transform.position);
             else
                 Debug.Log("No resource found within range");
         }
@@ -153,7 +153,7 @@ namespace Minigame {
             Resource closestResource = Resources.GetNearestResourceWithColor(color, head.transform.position);
 
             if (closestResource != null && Vector3.Distance(head.transform.position, closestResource.transform.position) < maxFindingDistance)
-                pathfinder.SetNewTargetAnticipatingObjectPosition(closestResource.transform, closestResource.movementDirection, closestResource.movementSpeed);
+                pathfinder.SetNewTargetPosition(closestResource.transform.position);
             else
                 Debug.Log("No resource with " + color.ToString() + " found within range");
         }
@@ -205,10 +205,10 @@ namespace Minigame {
             return false;
         }
 
-        private void OnDrawGizmos() {
-            Gizmos.DrawWireCube(head.transform.position, new Vector3(directMovementDistance * 2, 0, directMovementDistance * 2));
-            UnityEditor.Handles.DrawWireArc(head.transform.position, head.transform.up, -head.transform.right, 360, maxFindingDistance);
-        }
+        //private void OnDrawGizmosSelected() {
+        //    Gizmos.DrawWireCube(head.transform.position, new Vector3(directMovementDistance * 2, 0, directMovementDistance * 2));
+        //    UnityEditor.Handles.DrawWireArc(head.transform.position, head.transform.up, -head.transform.right, 360, maxFindingDistance);
+        //}
     }
 
     [Serializable]

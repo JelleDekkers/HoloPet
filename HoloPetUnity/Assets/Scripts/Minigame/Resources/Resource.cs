@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public enum Emotion {
@@ -19,21 +19,50 @@ namespace Minigame {
     public class Resource : MonoBehaviour {
 
         public Vector3 movementDirection;
-        public float movementSpeed = 1;
-        [SerializeField] private float eatDuration = 0.5f;
-
-        private bool hasBeenVisible;
+        //public float movementSpeed = 1;
+        [SerializeField] private float eatDuration = 0.3f;
+        [SerializeField] private float spawnDuration = 0.7f;
+        [SerializeField] private float removeDuration = 0.5f;
+        [SerializeField] private float timeUntillDestroy = 10f;
 
         public Emotion emotion = Emotion.Happy;
         public int energyValue = 10;
 
-        public void Update() {
-            transform.Translate(movementDirection * movementSpeed * Time.deltaTime, Space.World);
+        private bool hasBeenVisible;
+        private float lifeTimer;
+
+        //public void Update() {
+        //    transform.Translate(movementDirection * movementSpeed * Time.deltaTime, Space.World);
+        //}
+
+        private void Start() {
+            StartCoroutine(Spawn());
         }
 
-        public IEnumerator GetEaten() {
+        private void Update() {
+            if(lifeTimer < timeUntillDestroy) {
+                lifeTimer += Time.deltaTime;
+            } else {
+                StartCoroutine(DestroyObject());
+            }
+        }
+
+        private IEnumerator Spawn() {
+            Vector3 start = Vector3.zero;
+            Vector3 target = transform.localScale;
+            transform.localScale = start;
+            float timer = 0;
+
+            while (timer < eatDuration) {
+                transform.localScale = Vector3.Lerp(start, target, timer / eatDuration);
+                timer += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        public IEnumerator DestroyObject() {
             Vector3 start = transform.localScale;
-            Vector3 target = new Vector3(0.1f, 0.1f, 0.1f);
+            Vector3 target = Vector3.zero;
             float timer = 0;
 
             GetComponent<BoxCollider>().enabled = false;
@@ -41,7 +70,6 @@ namespace Minigame {
             while (timer < eatDuration) {
                 transform.localScale = Vector3.Lerp(start, target, timer / eatDuration);
                 timer += Time.deltaTime;
-
                 yield return null;
             }
 
