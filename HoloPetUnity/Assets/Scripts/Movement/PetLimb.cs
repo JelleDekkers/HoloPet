@@ -26,7 +26,8 @@ namespace Minigame {
             if (Vector3.Distance(transform.position, parent.position) > maxDistance) {
                 transform.position = Vector3.Lerp(transform.position, parent.position, followSpeed * Time.deltaTime);
                 transform.LookAt(parent);
-                transform.rotation *= initialRotation;
+                transform.rotation = parent.transform.rotation;
+               // transform.rotation *= initialRotation;
 
                 //var lookPos = parent.position - transform.position;
                 //lookPos.x = 0;

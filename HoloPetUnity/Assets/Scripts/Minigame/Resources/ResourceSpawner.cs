@@ -12,7 +12,7 @@ namespace Minigame {
         [SerializeField] private Resource[] resourcePrefabs;
         [SerializeField] private float timeBetweenSpawnsMin = 1, timeBetweenSpawnsMax = 2;
 
-        [SerializeField] private Vector3 range = new Vector3(3, 3, 3);
+        public Vector3 range = new Vector3(3, 3, 3);
 
         private float spawnTimer;
 
@@ -33,10 +33,7 @@ namespace Minigame {
         }
 
         private void SpawnResourceAtRandomPosition() {
-            Vector3 rndSpawnLocation = transform.position;
-            rndSpawnLocation.x += Random.Range(-range.x / 2, range.x / 2);
-            rndSpawnLocation.y += Random.Range(-range.y / 2, range.y / 2);
-            rndSpawnLocation.z += Random.Range(-range.z / 2, range.z / 2);
+            Vector3 rndSpawnLocation = Common.GetRandomPositionWithinRange(range, transform.position);
             Resource r = Instantiate(resourcePrefabs.GetRandom(), rndSpawnLocation, Random.rotation);
             Resources.Add(r);
         }

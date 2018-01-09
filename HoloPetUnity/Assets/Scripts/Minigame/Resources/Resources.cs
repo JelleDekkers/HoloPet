@@ -25,6 +25,10 @@ namespace Minigame {
             AllResources = null;
         }
 
+        public static Resource GetRandom() {
+            return allResources.GetRandom();
+        }
+
         public static Resource GetNearestResource(Transform t) {
             float closestDist = Mathf.Infinity;
             Resource closestResource = null;

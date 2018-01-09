@@ -53,8 +53,8 @@ namespace Minigame {
             transform.localScale = start;
             float timer = 0;
 
-            while (timer < eatDuration) {
-                transform.localScale = Vector3.Lerp(start, target, timer / eatDuration);
+            while (timer < spawnDuration) {
+                transform.localScale = Vector3.Lerp(start, target, timer / spawnDuration);
                 timer += Time.deltaTime;
                 yield return null;
             }

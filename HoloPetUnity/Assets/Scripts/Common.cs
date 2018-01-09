@@ -28,4 +28,12 @@ public static class Common {
     public static bool IsFromRight(Vector3 pos, Vector3 target) {
         return (Mathf.Abs(target.x) - Mathf.Abs(pos.x) > 0);
     }
+
+    public static Vector3 GetRandomPositionWithinRange(Vector3 range, Vector3 centre) {
+        Vector3 rndLocation = centre;
+        rndLocation.x += Random.Range(-range.x / 2, range.x / 2);
+        rndLocation.y += Random.Range(-range.y / 2, range.y / 2);
+        rndLocation.z += Random.Range(-range.z / 2, range.z / 2);
+        return rndLocation;
+    }
 }

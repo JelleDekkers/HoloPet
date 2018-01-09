@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 namespace Minigame {
@@ -16,9 +16,6 @@ namespace Minigame {
         public BezierSpline spline;
         public TravelMode travelMode;
 
-        private float progress = 0f;
-        private Transform cachedTransform;
-
         public float NormalizedT {
             get {
                 return progress;
@@ -32,9 +29,14 @@ namespace Minigame {
         //public float movementLerpModifier = 10f;
         public float rotationLerpModifier = 10f;
         public bool lookForward = true;
-
+        public Action OnTargetReached;
+        [SerializeField]
+        private bool targetReachedFlag;
         private bool isGoingForward = true;
         private Quaternion initialRotation;
+        [SerializeField]
+        private float progress = 0f;
+        private Transform cachedTransform;
 
         void Awake() {
             cachedTransform = transform;
@@ -46,7 +48,7 @@ namespace Minigame {
             Transform[] bones = transform.parent.GetComponentsInChildren<Transform>();
 
             if (generateLimbComponentsOnChilds) {
-                for (int i = 3; i < bones.Length; i++) {
+                for (int i = 3; i < bones.Length - 1; i++) {
                     bones[i].gameObject.AddComponent<PetLimb>().Init(bones[i - 1]);
                 }
             }
@@ -84,8 +86,8 @@ namespace Minigame {
                 } else {
                     targetRotation = Quaternion.LookRotation(-spline.GetTangent(progress));
                 }
-                cachedTransform.rotation = targetRotation;
-                //cachedTransform.localRotation = Quaternion.Lerp(cachedTransform.rotation, targetRotation, rotationLerpModifier * Time.deltaTime);
+                //cachedTransform.rotation = targetRotation;
+                cachedTransform.localRotation = Quaternion.Lerp(cachedTransform.rotation, targetRotation, rotationLerpModifier * Time.deltaTime);
                 //transform.localRotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, 0));
             }
 
@@ -100,6 +102,14 @@ namespace Minigame {
                         progress = 2f - progress;
                         isGoingForward = !isGoingForward;
                     }
+
+                    if (OnTargetReached != null && !targetReachedFlag) {
+                        OnTargetReached.Invoke();
+                        targetReachedFlag = true;
+                    }
+
+                } else {
+                    targetReachedFlag = false;
                 } 
             } else {
                 if (progress <= relaxationAtEndPoints) {
@@ -116,7 +126,7 @@ namespace Minigame {
         }
 
         public void ResetProgress() {
-            progress = 0;
+            progress = 0f;
         }
     }
 }

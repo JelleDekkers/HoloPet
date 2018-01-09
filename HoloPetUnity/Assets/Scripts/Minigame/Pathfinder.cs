@@ -14,9 +14,23 @@ public class Pathfinder : MonoBehaviour {
 
     private Animator animator;
 
+    private void Start() {
+        walker.OnTargetReached += SetNewRandomResourceTarget;
+    }
+
     private void Update() {
         if(Input.GetMouseButtonDown(0))
             SetNewTargetPosition(GetMousePositionInScene());
+    }
+
+    private void SetNewRandomResourceTarget() {
+        if (Minigame.Resources.AllResources.Count > 0) {
+            Resource rndResource = Minigame.Resources.GetRandom();
+            SetNewTargetPosition(rndResource.transform.position);
+        } else {
+            Vector3 rndPos = Common.GetRandomPositionWithinRange(ResourceSpawner.Instance.range, ResourceSpawner.Instance.transform.position);
+            SetNewTargetPosition(rndPos);
+        }
     }
 
     public void SetNewTargetPosition(Vector3 pos) {
@@ -29,7 +43,7 @@ public class Pathfinder : MonoBehaviour {
         p.rotation = Quaternion.Euler(conversion);
 
         spline.RemovePointAt(0);
-        if(spline.Count > 2)
+        if (spline.Count > 2)
             spline.RemovePointAt(0);
 
         if (Vector3.Distance(walker.transform.position, p.position) > minDistanceForExtraSplinePoint) {
@@ -78,5 +92,9 @@ public class Pathfinder : MonoBehaviour {
             return hitPoint;
         }
         return Vector3.zero;
+    }
+
+    private void OnDestroy() {
+        walker.OnTargetReached -= SetNewRandomResourceTarget;
     }
 }
