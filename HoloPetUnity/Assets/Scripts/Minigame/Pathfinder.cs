@@ -35,7 +35,7 @@ public class Pathfinder : MonoBehaviour {
 
     public void SetNewTargetPosition(Vector3 pos) {
         walker.enabled = true;
-        spline.endPoints[spline.Count - 1].position = Pet.Instance.Head.transform.position;
+        spline.endPoints[spline.Count - 1].position = PetMinigame.Instance.Head.transform.position;
         BezierPoint p = spline.InsertNewPointAtWorldPosition(spline.Count, pos);
         
         Quaternion lookRot = Quaternion.LookRotation(p.position - walker.transform.position, Vector3.forward);
@@ -52,7 +52,7 @@ public class Pathfinder : MonoBehaviour {
             p.precedingControlPointLocalPosition = new Vector3(splineLength, p.precedingControlPointLocalPosition.y, p.precedingControlPointLocalPosition.z);
             lookRot = Quaternion.LookRotation(p.position - walker.transform.position, Vector3.forward);
             float angleModifier = 0;
-            if (Pet.Instance.currentEmotion == Emotion.Happy)
+            if (PetMinigame.Instance.currentEmotion == Emotion.Happy)
                 angleModifier = middleSplineAngleEmotionHappyModifier;
             conversion = new Vector3(0, (lookRot.eulerAngles.y + 90) + angleModifier, 0);
             p.rotation = Quaternion.Euler(conversion);

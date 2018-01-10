@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+using Random = UnityEngine.Random;
 
 namespace Minigame {
 
@@ -15,6 +17,11 @@ namespace Minigame {
         public Vector3 range = new Vector3(3, 3, 3);
 
         private float spawnTimer;
+        private Emotion lastSpawned;
+
+        private void OnGUI() {
+            GUI.Label(new Rect(10, 10, 1000, 20), "last: " + lastSpawned);
+        }
 
         private void Awake() {
             instance = this;
@@ -33,8 +40,14 @@ namespace Minigame {
         }
 
         private void SpawnResourceAtRandomPosition() {
+            List<Resource> resourcesEligibleForSpawn = new List<Resource>();
+            foreach (Resource p in resourcePrefabs) {
+                if(p.emotion != lastSpawned)
+                    resourcesEligibleForSpawn.Add(p);
+            }
             Vector3 rndSpawnLocation = Common.GetRandomPositionWithinRange(range, transform.position);
-            Resource r = Instantiate(resourcePrefabs.GetRandom(), rndSpawnLocation, Random.rotation);
+            Resource r = Instantiate(resourcesEligibleForSpawn.GetRandom(), rndSpawnLocation, Random.rotation);
+            lastSpawned = r.emotion;
             Resources.Add(r);
         }
 

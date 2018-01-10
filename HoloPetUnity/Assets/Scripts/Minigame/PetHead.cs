@@ -57,7 +57,7 @@ namespace Minigame {
 
         private void OnTriggerEnter(Collider other) {
             if (other.GetComponent<Resource>())
-                Pet.Instance.CollectResource(other.GetComponent<Resource>());
+                PetMinigame.Instance.CollectResource(other.GetComponent<Resource>());
         }
 
         void Update() {
@@ -102,7 +102,6 @@ namespace Minigame {
                         progress = 2f - progress;
                         isGoingForward = !isGoingForward;
                     }
-
                     if (OnTargetReached != null && !targetReachedFlag) {
                         OnTargetReached.Invoke();
                         targetReachedFlag = true;

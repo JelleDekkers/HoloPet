@@ -42,10 +42,11 @@ namespace Minigame {
         private List<string> nearestMovementCommandsList;
         private List<string> nearestColorCommandsList;
 
-        public string[] commands;
+        [SerializeField] // for testing
+        private string[] allCommands;
 
         private void Start() {
-            commands = GetAllKeywords();
+            allCommands = GetAllKeywords();
             speechManager = new SpeechManager(GetAllKeywords());
             speechManager.OnPhraseRecognized += ParseCommandToKeyword;
         }
@@ -53,14 +54,14 @@ namespace Minigame {
         private string[] GetAllKeywords() {
             List<string> keywords = new List<string>();
 
-            directionalMovementCommandsList = ParseKeywordsToCommands(directMovementCommands, new Direction());
-            keywords.AddRange(directionalMovementCommandsList);
-            nearestMovementCommandsList = ParseKeywordsToCommands(nearestMovementCommands, new Direction());
-            keywords.AddRange(nearestMovementCommandsList);
-            //nearestColorCommandsList = ParseCommandsToKeywords(nearestColorCommands, new EmotionColor());
-            //keywords.AddRange(nearestColorCommandsList);
+            //directionalMovementCommandsList = ParseKeywordsToCommands(directMovementCommands, new Direction());
+            //keywords.AddRange(directionalMovementCommandsList);
+            //nearestMovementCommandsList = ParseKeywordsToCommands(nearestMovementCommands, new Direction());
+            //keywords.AddRange(nearestMovementCommandsList);
+            //keywords.AddRange(nearestResourceCommands);
 
-            keywords.AddRange(nearestResourceCommands);
+            nearestColorCommandsList = ParseKeywordsToCommands(nearestColorCommands, new EmotionColor());
+            keywords.AddRange(nearestColorCommandsList);
 
             keywords.AddRange(motivationalCommands);
             keywords.AddRange(punishingCommands);
@@ -91,14 +92,14 @@ namespace Minigame {
         private void ParseCommandToKeyword(string text) {
             Debug.Log("Command: <b>" + text + "</b>");
 
-            if (directionalMovementCommandsList.Contains(text))
-                DirectMoveCommandRecieved(text);
-            else if (nearestMovementCommandsList.Contains(text))
-                NearestMoveCommandRecieved(text);
-            else if (nearestResourceCommands.Contains(text))
-                NearestResourceCommandRecieved(text);
-            //else if (nearestColorCommandsList.Contains(text))
-            //    NearestColorCommandRecieved(text);
+            //if (directionalMovementCommandsList.Contains(text))
+            //    DirectMoveCommandRecieved(text);
+            //else if (nearestMovementCommandsList.Contains(text))
+            //    NearestMoveCommandRecieved(text);
+            //else if (nearestResourceCommands.Contains(text))
+            //    NearestResourceCommandRecieved(text);
+            if (nearestColorCommandsList.Contains(text))
+                NearestColorCommandRecieved(text);
             else if (motivationalCommands.Contains(text))
                 MotivationalCommandRecieved(text);
             else if (punishingCommands.Contains(text))
