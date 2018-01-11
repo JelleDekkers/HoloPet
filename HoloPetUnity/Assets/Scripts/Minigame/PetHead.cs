@@ -7,7 +7,7 @@ namespace Minigame {
     public class PetHead : MonoBehaviour {
 
         public float MovementSpeed { get; set; }
-        public float movementBaseSpeed = 3f;
+        public float movementStartingSpeed = 3f;
 
         [SerializeField][Tooltip("Set to true if limbs do not have joints")]
         private bool generateLimbComponentsOnChilds;
@@ -40,7 +40,11 @@ namespace Minigame {
 
         void Awake() {
             cachedTransform = transform;
-            MovementSpeed = movementBaseSpeed;
+            MovementSpeed = movementStartingSpeed;
+        }
+
+        public void SlowDown() {
+            MovementSpeed *= 0.5f;
         }
 
         private void Start() {
@@ -56,8 +60,9 @@ namespace Minigame {
         }
 
         private void OnTriggerEnter(Collider other) {
-            if (other.GetComponent<Resource>())
-                PetMinigame.Instance.CollectResource(other.GetComponent<Resource>());
+            if (other.GetComponent<Resource>()) {
+                PetMinigame.Instance.OnResourceCollected(other.GetComponent<Resource>());
+            }
         }
 
         void Update() {

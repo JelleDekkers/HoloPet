@@ -65,10 +65,11 @@ namespace Minigame {
 
             keywords.AddRange(motivationalCommands);
             keywords.AddRange(punishingCommands);
-            
-            foreach(VoiceCommand v in miscCommands) 
-                keywords.Add(v.command);
 
+            foreach (VoiceCommand v in miscCommands) {
+                foreach(string s in v.commands)
+                keywords.Add(s);
+            }
             return keywords.ToArray();
         }
 
@@ -137,8 +138,12 @@ namespace Minigame {
         }
 
         private void NearestResourceCommandRecieved(string command) {
-            Debug.Log("nearest resource command keyword: " + command);
+            if (PetMinigame.Instance.lastEmotionCollected == Emotion.Angry) {
+                Debug.Log("nearest resource command keyword: " + command + "is angry so not listening");
+                return;
+            }
 
+            Debug.Log("nearest resource command keyword: " + command);
             Resource closestResource = Resources.GetNearestResource(head.transform);
 
             if (closestResource != null && Vector3.Distance(head.transform.position, closestResource.transform.position) < maxFindingDistance)
@@ -147,11 +152,12 @@ namespace Minigame {
                 Debug.Log("No resource found within range");
         }
 
-
         private void NearestColorCommandRecieved(string command) {
             Debug.Log("nearest color command keyword: " + command);
             EmotionColor color = GetColorEmotionFromCommand(command);
             Resource closestResource = Resources.GetNearestResourceWithColor(color, head.transform.position);
+
+            head.MovementSpeed = head.movementStartingSpeed;
 
             if (closestResource != null && Vector3.Distance(head.transform.position, closestResource.transform.position) < maxFindingDistance)
                 pathfinder.SetNewTargetPosition(closestResource.transform.position);
@@ -161,10 +167,12 @@ namespace Minigame {
 
         private void MotivationalCommandRecieved(string command) {
             Debug.Log("motivational command keyword: " + command);
+            PetMinigame.Instance.OnMotivatationRecieved();
         }
 
         private void PunishingCommandRecieved(string command) {
             Debug.Log("punishment command keyword: " + command);
+            PetMinigame.Instance.OnPunishmentRecieved();
         }
 
         private Direction GetDirectionFromCommand(string text) {
@@ -195,9 +203,13 @@ namespace Minigame {
             throw new NotImplementedException();
         }
 
+        public void SlowDown() {
+            head.SlowDown();
+        }
+
         public bool MiscCommandsContains(string s, out VoiceCommand command) {
             foreach (VoiceCommand v in miscCommands) {
-                if (v.command.Contains(s)) {
+                if (v.commands.Contains(s)) {
                     command = v;
                     return true;
                 }
@@ -215,7 +227,7 @@ namespace Minigame {
     [Serializable]
     public class VoiceCommand {
 
-        public string command;
+        public string[] commands;
         public UnityEngine.Events.UnityEvent onCommandRecieved;
     }
 }

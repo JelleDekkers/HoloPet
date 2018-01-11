@@ -3,6 +3,8 @@ using UnityEngine;
 using System;
 using System.Linq;
 
+using Random = UnityEngine.Random;
+
 namespace Minigame {
 
     public static class Resources {
@@ -13,20 +15,42 @@ namespace Minigame {
             private set { allResources = value; }
         }
 
+        public static Action OnResourceRemoved;
+
         public static void Add(Resource r) {
             AllResources.Add(r);
         }
 
         public static void Remove(Resource r) {
-            AllResources.Remove(r);
+            if(allResources.Contains(r))
+                AllResources.Remove(r);
+            if (OnResourceRemoved != null)
+                OnResourceRemoved.Invoke();
         }
 
         public static void Clear() {
-            AllResources = null;
+            OnResourceRemoved = null;
+            for (int i = allResources.Count - 1; i >= 0; i--) {
+                allResources[i].OnCollected();
+            }
         }
 
         public static Resource GetRandom() {
             return allResources.GetRandom();
+        }
+
+        public static Resource GetRandomDependingOnIncentive(float happyIncentive, Vector3 position) {
+            float chanceHappy = happyIncentive / 100;
+            float chanceBad = 1 - happyIncentive;
+            float rnd = Random.value;
+            if (rnd < chanceHappy) {
+                return GetNearestResourceWithColor(EmotionColor.Blue, position);
+            } else {
+                if (rnd > 0.5f)
+                    return GetNearestResourceWithColor(EmotionColor.Red, position);
+                else
+                    return GetNearestResourceWithColor(EmotionColor.Yellow, position);
+            }
         }
 
         public static Resource GetNearestResource(Transform t) {

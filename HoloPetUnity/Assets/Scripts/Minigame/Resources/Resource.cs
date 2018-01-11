@@ -8,6 +8,9 @@ public enum Emotion {
     Angry = 2
 }
 
+/// <summary>
+/// Enum used for speech commands that links to the Color enum
+/// </summary>
 public enum EmotionColor {
     Blue = 0,
     Yellow = 1,
@@ -26,14 +29,9 @@ namespace Minigame {
         [SerializeField] private float timeUntillDestroy = 10f;
 
         public Emotion emotion = Emotion.Happy;
-        public int energyValue = 10;
 
         private bool hasBeenVisible;
         private float lifeTimer;
-
-        //public void Update() {
-        //    transform.Translate(movementDirection * movementSpeed * Time.deltaTime, Space.World);
-        //}
 
         private void Start() {
             StartCoroutine(Spawn());
@@ -60,7 +58,12 @@ namespace Minigame {
             }
         }
 
-        public IEnumerator DestroyObject() {
+        public void OnCollected() {
+            Resources.Remove(this);
+            StartCoroutine(DestroyObject());
+        }
+
+        private IEnumerator DestroyObject() {
             Vector3 start = transform.localScale;
             Vector3 target = Vector3.zero;
             float timer = 0;
@@ -73,7 +76,6 @@ namespace Minigame {
                 yield return null;
             }
 
-            Resources.Remove(this);
             Destroy(gameObject);
         }
 

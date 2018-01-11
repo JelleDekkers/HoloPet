@@ -13,18 +13,20 @@ namespace Minigame {
 
         [SerializeField] private Resource[] resourcePrefabs;
         [SerializeField] private float timeBetweenSpawnsMin = 1, timeBetweenSpawnsMax = 2;
+        [SerializeField] private int wantedAmountInScene = 10;
 
         public Vector3 range = new Vector3(3, 3, 3);
 
         private float spawnTimer;
         private Emotion lastSpawned;
 
-        private void OnGUI() {
-            GUI.Label(new Rect(10, 10, 1000, 20), "last: " + lastSpawned);
-        }
-
         private void Awake() {
             instance = this;
+            Resources.OnResourceRemoved += SpawnResourceAtRandomPosition;
+            for (int i = 0; i < wantedAmountInScene; i++)
+                SpawnResourceAtRandomPosition();
+
+            PetMinigame.Instance.OnGameOver += () => { enabled = false; };
         }
 
         private void Update() {
@@ -53,6 +55,10 @@ namespace Minigame {
 
         private void OnDrawGizmos() {
             Gizmos.DrawWireCube(transform.position, range);
+        }
+
+        private void OnDestroy() {
+            Resources.OnResourceRemoved -= SpawnResourceAtRandomPosition;
         }
     }
 }

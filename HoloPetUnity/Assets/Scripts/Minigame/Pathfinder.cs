@@ -16,6 +16,7 @@ public class Pathfinder : MonoBehaviour {
 
     private void Start() {
         walker.OnTargetReached += SetNewRandomResourceTarget;
+        //PetMinigame.Instance.OnGameOver += () => { walker.OnTargetReached -= SetNewRandomResourceTarget; }; 
     }
 
     private void Update() {
@@ -24,8 +25,9 @@ public class Pathfinder : MonoBehaviour {
     }
 
     private void SetNewRandomResourceTarget() {
-        if (Minigame.Resources.AllResources.Count > 0) {
-            Resource rndResource = Minigame.Resources.GetRandom();
+        Resource rndResource = Minigame.Resources.GetRandomDependingOnIncentive(PetMinigame.Instance.IncentiveToCollectHappyResource, walker.transform.position);
+
+        if (rndResource) {
             SetNewTargetPosition(rndResource.transform.position);
         } else {
             Vector3 rndPos = Common.GetRandomPositionWithinRange(ResourceSpawner.Instance.range, ResourceSpawner.Instance.transform.position);
@@ -52,7 +54,7 @@ public class Pathfinder : MonoBehaviour {
             p.precedingControlPointLocalPosition = new Vector3(splineLength, p.precedingControlPointLocalPosition.y, p.precedingControlPointLocalPosition.z);
             lookRot = Quaternion.LookRotation(p.position - walker.transform.position, Vector3.forward);
             float angleModifier = 0;
-            if (PetMinigame.Instance.currentEmotion == Emotion.Happy)
+            if (PetMinigame.Instance.lastEmotionCollected == Emotion.Happy)
                 angleModifier = middleSplineAngleEmotionHappyModifier;
             conversion = new Vector3(0, (lookRot.eulerAngles.y + 90) + angleModifier, 0);
             p.rotation = Quaternion.Euler(conversion);
