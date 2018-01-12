@@ -29,19 +29,22 @@ namespace Minigame {
             PetMinigame.Instance.OnGameOver += () => { enabled = false; };
         }
 
-        private void Update() {
-            spawnTimer -= Time.deltaTime;
-            if(spawnTimer < 0) {
-                SpawnResourceAtRandomPosition();
-                ResetSpawnTimer();
-            }
-        }
+        //private void Update() {
+        //    spawnTimer -= Time.deltaTime;
+        //    if(spawnTimer < 0) {
+        //        SpawnResourceAtRandomPosition();
+        //        ResetSpawnTimer();
+        //    }
+        //}
 
         private void ResetSpawnTimer() {
             spawnTimer = Random.Range(timeBetweenSpawnsMin, timeBetweenSpawnsMax);
         }
 
         private void SpawnResourceAtRandomPosition() {
+            if (Resources.AllResources.Count > wantedAmountInScene)
+                return;
+
             List<Resource> resourcesEligibleForSpawn = new List<Resource>();
             foreach (Resource p in resourcePrefabs) {
                 if(p.emotion != lastSpawned)

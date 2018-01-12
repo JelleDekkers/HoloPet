@@ -28,7 +28,13 @@ namespace Minigame {
         public float movementSpeedOnAngry, movementSpeedOnSad, movementSpeedOnHappy;
 
         public Emotion lastEmotionCollected;
-        public float IncentiveToCollectHappyResource;
+        [SerializeField]
+        private float incentiveToCollectHappyResource;
+        public float IncentiveToCollectHappyResource {
+            get { return incentiveToCollectHappyResource; }
+            set { if (value >= 0 && value <= 100)
+                    incentiveToCollectHappyResource = value; }
+        }
         public System.Action OnGameOver;
 
         private void Awake() {
@@ -49,8 +55,8 @@ namespace Minigame {
                     GameOver();
                 Head.MovementSpeed = movementSpeedOnHappy;
             } else {
-                if(happyCount > 0)
-                    happyCount--;
+                if(happyCount > 1)
+                    happyCount -= 2;
                 if (resource.emotion == Emotion.Angry)
                     Head.MovementSpeed = movementSpeedOnAngry;
                 else

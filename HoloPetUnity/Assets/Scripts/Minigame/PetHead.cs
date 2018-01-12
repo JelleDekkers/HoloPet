@@ -6,11 +6,10 @@ namespace Minigame {
 
     public class PetHead : MonoBehaviour {
 
+        [SerializeField] private bool useJoints;
+
         public float MovementSpeed { get; set; }
         public float movementStartingSpeed = 3f;
-
-        [SerializeField][Tooltip("Set to true if limbs do not have joints")]
-        private bool generateLimbComponentsOnChilds;
 
         public enum TravelMode { Once, Loop, PingPong };
         public BezierSpline spline;
@@ -49,13 +48,18 @@ namespace Minigame {
 
         private void Start() {
             initialRotation = transform.parent.rotation;
-            Transform[] bones = transform.parent.GetComponentsInChildren<Transform>();
+            PetLimb[] limbs = transform.parent.GetComponentsInChildren<PetLimb>();
+            for (int i = 0; i < limbs.Length; i++) {
+                // head:
+                if(i == 0)
+                    limbs[i].Init(transform.GetChild(0));
+                else 
+                    limbs[i].Init(limbs[i - 1].transform);
 
-            if (generateLimbComponentsOnChilds) {
-                for (int i = 3; i < bones.Length - 1; i++) {
-                    bones[i].gameObject.AddComponent<PetLimb>().Init(bones[i - 1]);
-                }
+                limbs[i].gameObject.GetComponent<PetLimb>().enabled = !useJoints;
+                limbs[i].GetComponent<Rigidbody>().isKinematic = !useJoints;    
             }
+
             transform.GetChild(0).localRotation = Quaternion.Euler(new Vector3(90, 0, 90));
         }
 

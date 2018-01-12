@@ -60,8 +60,8 @@ namespace Minigame {
             //keywords.AddRange(nearestMovementCommandsList);
             //keywords.AddRange(nearestResourceCommands);
 
-            nearestColorCommandsList = ParseKeywordsToCommands(nearestColorCommands, new EmotionColor());
-            keywords.AddRange(nearestColorCommandsList);
+            //nearestColorCommandsList = ParseKeywordsToCommands(nearestColorCommands, new EmotionColor());
+            //keywords.AddRange(nearestColorCommandsList);
 
             keywords.AddRange(motivationalCommands);
             keywords.AddRange(punishingCommands);
@@ -99,9 +99,9 @@ namespace Minigame {
             //    NearestMoveCommandRecieved(text);
             //else if (nearestResourceCommands.Contains(text))
             //    NearestResourceCommandRecieved(text);
-            if (nearestColorCommandsList.Contains(text))
-                NearestColorCommandRecieved(text);
-            else if (motivationalCommands.Contains(text))
+            //if (nearestColorCommandsList.Contains(text))
+            //    NearestColorCommandRecieved(text);
+            if (motivationalCommands.Contains(text))
                 MotivationalCommandRecieved(text);
             else if (punishingCommands.Contains(text))
                 PunishingCommandRecieved(text);

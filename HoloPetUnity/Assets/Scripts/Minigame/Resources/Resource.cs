@@ -76,6 +76,7 @@ namespace Minigame {
                 yield return null;
             }
 
+            Resources.Remove(this);
             Destroy(gameObject);
         }
 

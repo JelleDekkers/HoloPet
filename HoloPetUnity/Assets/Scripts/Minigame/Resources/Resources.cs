@@ -22,9 +22,9 @@ namespace Minigame {
         }
 
         public static void Remove(Resource r) {
-            if(allResources.Contains(r))
+            if (allResources.Contains(r))
                 AllResources.Remove(r);
-            if (OnResourceRemoved != null)
+            if (OnResourceRemoved != null) 
                 OnResourceRemoved.Invoke();
         }
 
@@ -70,9 +70,14 @@ namespace Minigame {
             Emotion correspondingEmotion = (Emotion)((int)color);
             List<Resource> resourcesWithCorrespondingColor = AllResources.Where(x => x.emotion == correspondingEmotion).ToList();
 
+            if (resourcesWithCorrespondingColor.Count == 0)
+                return null;
+
             float closestDist = Mathf.Infinity;
             Resource closestResource = null;
             foreach (Resource r in resourcesWithCorrespondingColor) {
+                if (r == null)
+                    continue;
                 float dist = Vector3.Distance(r.transform.position, position);
                 if (dist < closestDist) {
                     closestDist = dist;

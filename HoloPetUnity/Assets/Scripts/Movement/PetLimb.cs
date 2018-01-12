@@ -8,18 +8,15 @@ namespace Minigame {
 
         [SerializeField]
         private float followSpeed = 20;
-
+        [SerializeField]
         private Transform parent;
         private float maxDistance;
         private Quaternion initialRotation;
 
-        private void Start() {
-            maxDistance = Vector3.Distance(transform.position, parent.position);
-            initialRotation = transform.rotation;
-        }
-
         public void Init(Transform parent) {
             this.parent = parent;
+            maxDistance = Vector3.Distance(transform.position, parent.position);
+            initialRotation = transform.rotation;
         }
 
         private void Update() {
