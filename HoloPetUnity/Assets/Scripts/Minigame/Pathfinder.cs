@@ -7,24 +7,14 @@ using Minigame;
 public class Pathfinder : MonoBehaviour {
 
     [SerializeField] private BezierSpline spline;
-    [SerializeField] private PetHead walker;
+    [SerializeField] public PetHead walker;
     [SerializeField] private float minDistanceForExtraSplinePoint = 3f;
     [SerializeField] private float middleSplineLengthModifierMax = 0.4f;
     [SerializeField] private float middleSplineAngleEmotionHappyModifier = 30;
 
     private Animator animator;
 
-    private void Start() {
-        walker.OnTargetReached += SetNewRandomResourceTarget;
-        //PetMinigame.Instance.OnGameOver += () => { walker.OnTargetReached -= SetNewRandomResourceTarget; }; 
-    }
-
-    private void Update() {
-        if(Input.GetMouseButtonDown(0))
-            SetNewTargetPosition(GetMousePositionInScene());
-    }
-
-    private void SetNewRandomResourceTarget() {
+    public void SetNewRandomResourceTarget() {
         Resource rndResource = Minigame.Resources.GetRandomDependingOnIncentive(PetMinigame.Instance.IncentiveToCollectHappyResource, walker.transform.position);
 
         if (rndResource) {
@@ -94,9 +84,5 @@ public class Pathfinder : MonoBehaviour {
             return hitPoint;
         }
         return Vector3.zero;
-    }
-
-    private void OnDestroy() {
-        walker.OnTargetReached -= SetNewRandomResourceTarget;
     }
 }

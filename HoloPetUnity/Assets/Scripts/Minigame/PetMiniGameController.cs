@@ -49,6 +49,7 @@ namespace Minigame {
             allCommands = GetAllKeywords();
             speechManager = new SpeechManager(GetAllKeywords());
             speechManager.OnPhraseRecognized += ParseCommandToKeyword;
+            pathfinder.walker.OnTargetReached += pathfinder.SetNewRandomResourceTarget;
         }
 
         private string[] GetAllKeywords() {
@@ -218,16 +219,14 @@ namespace Minigame {
             return false;
         }
 
+        private void OnDestroy() {
+            pathfinder.walker.OnTargetReached -= pathfinder.SetNewRandomResourceTarget;
+        }
+
         //private void OnDrawGizmosSelected() {
         //    Gizmos.DrawWireCube(head.transform.position, new Vector3(directMovementDistance * 2, 0, directMovementDistance * 2));
         //    UnityEditor.Handles.DrawWireArc(head.transform.position, head.transform.up, -head.transform.right, 360, maxFindingDistance);
         //}
     }
 
-    [Serializable]
-    public class VoiceCommand {
-
-        public string[] commands;
-        public UnityEngine.Events.UnityEvent onCommandRecieved;
-    }
 }

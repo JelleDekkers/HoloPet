@@ -5,7 +5,7 @@ using Minigame;
 
 namespace Minigame {
 
-    public class PetMinigame : MonoBehaviour {
+    public class PetMinigame : Pet {
 
         private static PetMinigame instance;
         public static PetMinigame Instance {
@@ -15,8 +15,6 @@ namespace Minigame {
                 return instance;
             }
         }
-
-        public PetHead Head { get; private set; }
 
         public int happyCountNeededToWin = 6;
         public int happyCount;
@@ -39,10 +37,6 @@ namespace Minigame {
 
         private void Awake() {
             instance = this;
-        }
-
-        private void Start() {
-            Head = transform.GetChild(0).GetComponent<PetHead>();
         }
 
         public void OnResourceCollected(Resource resource) {
