@@ -41,7 +41,6 @@ namespace Minigame {
 
         public static Resource GetRandomDependingOnIncentive(float happyIncentive, Vector3 position) {
             float chanceHappy = happyIncentive / 100;
-            float chanceBad = 1 - happyIncentive;
             float rnd = Random.value;
             if (rnd < chanceHappy) {
                 return GetNearestResourceWithColor(EmotionColor.Blue, position);

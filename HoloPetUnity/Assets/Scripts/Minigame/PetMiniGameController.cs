@@ -16,7 +16,7 @@ namespace Minigame {
 
         [SerializeField] private PetHead head;
         [SerializeField] private float directMovementDistance = 5;
-        [SerializeField] private Pathfinder pathfinder;
+        [SerializeField] private PathfinderMinigame pathfinder;
         [SerializeField] private float maxFindingDistance = 5;
 
         [Tooltip("Commands for direct movements, such as: 'Go Left'")]

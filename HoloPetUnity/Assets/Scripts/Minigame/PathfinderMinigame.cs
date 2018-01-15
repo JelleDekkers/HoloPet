@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using Minigame;
 
-public class Pathfinder : MonoBehaviour {
+public class PathfinderMinigame : MonoBehaviour {
 
     [SerializeField] private BezierSpline spline;
     [SerializeField] public PetHead walker;
@@ -27,7 +27,7 @@ public class Pathfinder : MonoBehaviour {
 
     public void SetNewTargetPosition(Vector3 pos) {
         walker.enabled = true;
-        spline.endPoints[spline.Count - 1].position = PetMinigame.Instance.Head.transform.position;
+        spline.endPoints[spline.Count - 1].position = walker.transform.position;
         BezierPoint p = spline.InsertNewPointAtWorldPosition(spline.Count, pos);
         
         Quaternion lookRot = Quaternion.LookRotation(p.position - walker.transform.position, Vector3.forward);

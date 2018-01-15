@@ -21,8 +21,6 @@ namespace Minigame {
 
     public class Resource : MonoBehaviour {
 
-        public Vector3 movementDirection;
-        //public float movementSpeed = 1;
         [SerializeField] private float eatDuration = 0.3f;
         [SerializeField] private float spawnDuration = 0.7f;
         [SerializeField] private float removeDuration = 0.5f;

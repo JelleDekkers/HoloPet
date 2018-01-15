@@ -17,7 +17,6 @@ namespace Minigame {
 
         public Vector3 range = new Vector3(3, 3, 3);
 
-        private float spawnTimer;
         private Emotion lastSpawned;
 
         private void Awake() {
@@ -27,18 +26,6 @@ namespace Minigame {
                 SpawnResourceAtRandomPosition();
 
             PetMinigame.Instance.OnGameOver += () => { enabled = false; };
-        }
-
-        //private void Update() {
-        //    spawnTimer -= Time.deltaTime;
-        //    if(spawnTimer < 0) {
-        //        SpawnResourceAtRandomPosition();
-        //        ResetSpawnTimer();
-        //    }
-        //}
-
-        private void ResetSpawnTimer() {
-            spawnTimer = Random.Range(timeBetweenSpawnsMin, timeBetweenSpawnsMax);
         }
 
         private void SpawnResourceAtRandomPosition() {

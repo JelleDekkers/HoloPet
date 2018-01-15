@@ -34,7 +34,7 @@ namespace Minigame {
                     incentiveToCollectHappyResource = value; }
         }
         public System.Action OnGameOver;
-
+     
         private void Awake() {
             instance = this;
         }
