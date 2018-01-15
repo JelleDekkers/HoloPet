@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Minigame;
+using UnityEngine.SceneManagement;
 
 namespace Minigame {
 
@@ -25,36 +26,51 @@ namespace Minigame {
 
         public float movementSpeedOnAngry, movementSpeedOnSad, movementSpeedOnHappy;
 
+        [SerializeField] private AudioClip[] happyAudio, sadAudio, angryAudio, punishmentAudio, motivationAudio, gameOverAudio;
+
         public Emotion lastEmotionCollected;
+
         [SerializeField]
         private float incentiveToCollectHappyResource;
         public float IncentiveToCollectHappyResource {
             get { return incentiveToCollectHappyResource; }
-            set { if (value >= 0 && value <= 100)
-                    incentiveToCollectHappyResource = value; }
+            set { if (value >= 0)
+                    incentiveToCollectHappyResource = value;
+                if (incentiveToCollectHappyResource > 100)
+                    incentiveToCollectHappyResource = 100;
+            }
         }
         public System.Action OnGameOver;
-     
+
+        private AudioSource audioSrc;
+
+
         private void Awake() {
             instance = this;
+            audioSrc = GetComponent<AudioSource>();
         }
 
         public void OnResourceCollected(Resource resource) {
             resource.OnCollected();
             lastEmotionCollected = resource.emotion;
-
-            if(resource.emotion == Emotion.Happy) {
+            Debug.Log("collected " + resource.emotion);
+            if (resource.emotion == Emotion.Happy) {
                 happyCount++;
                 if (happyCount == happyCountNeededToWin)
                     GameOver();
+                else
+                    PlayRandomHappySound();
                 Head.MovementSpeed = movementSpeedOnHappy;
             } else {
-                if(happyCount > 1)
+                if (happyCount > 1)
                     happyCount -= 2;
-                if (resource.emotion == Emotion.Angry)
+                if (resource.emotion == Emotion.Angry) {
                     Head.MovementSpeed = movementSpeedOnAngry;
-                else
+                    PlayRandomAngrySound();
+                } else {
                     Head.MovementSpeed = movementSpeedOnSad;
+                    PlayRandomSadSound();
+                }
             }
         }
 
@@ -63,6 +79,9 @@ namespace Minigame {
                 IncentiveToCollectHappyResource += happyIncentiveIncreasePerCorrectMotivationalCommand;
             else
                 IncentiveToCollectHappyResource -= happyIncentiveDecreasePerWrongMotivationalCommand;
+
+            if (!audioSrc.isPlaying)
+                audioSrc.PlayOneShot(motivationAudio.GetRandom());
         }
 
         public void OnPunishmentRecieved() {
@@ -70,6 +89,28 @@ namespace Minigame {
                 IncentiveToCollectHappyResource -= happyIncentiveDecreasePerWrongMotivationalCommand;
             else
                 IncentiveToCollectHappyResource += happyIncentiveIncreasePerCorrectPunishmentCommand;
+
+            if (!audioSrc.isPlaying)
+                audioSrc.PlayOneShot(punishmentAudio.GetRandom());
+        }
+
+        public void PlayRandomHappySound() {
+            if (!audioSrc.isPlaying)
+                audioSrc.PlayOneShot(happyAudio.GetRandom());
+        }
+
+        public void PlayRandomAngrySound() {
+            if (!audioSrc.isPlaying)
+                audioSrc.PlayOneShot(angryAudio.GetRandom());
+        }
+
+        public void PlayRandomSadSound() {
+            if (!audioSrc.isPlaying)
+                audioSrc.PlayOneShot(sadAudio.GetRandom());
+        }
+
+        public void PlayRandomGameOverSound() {
+            audioSrc.PlayOneShot(gameOverAudio.GetRandom());
         }
 
         private void GameOver() {
@@ -77,6 +118,8 @@ namespace Minigame {
             Resources.Clear();
             OnGameOver();
             Head.SlowDown();
+            PlayRandomGameOverSound();
+            SceneManager.LoadScene(1);
         }
     }
 }

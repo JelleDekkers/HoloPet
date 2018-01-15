@@ -87,8 +87,8 @@ public class PetHead : MonoBehaviour {
             } else {
                 targetRotation = Quaternion.LookRotation(-spline.GetTangent(progress));
             }
-            //cachedTransform.rotation = targetRotation;
-            cachedTransform.localRotation = Quaternion.Lerp(cachedTransform.rotation, targetRotation, rotationLerpModifier * Time.deltaTime);
+            cachedTransform.rotation = targetRotation;
+            //cachedTransform.localRotation = Quaternion.Lerp(cachedTransform.rotation, targetRotation, rotationLerpModifier * Time.deltaTime);
             //transform.localRotation = Quaternion.Euler(new Vector3(transform.rotation.x, transform.rotation.y, 0));
         }
 

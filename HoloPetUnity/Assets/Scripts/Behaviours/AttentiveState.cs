@@ -4,14 +4,23 @@ using UnityEngine;
 
 public class AttentiveState : State {
 
+    private IEnumerator waitTimer;
+
     public AttentiveState(PetController pet) : base(pet) { }
 
     public override void Update() { }
 
     public override void OnStateEnter() {
-        // look at player real world space
-        // walker uit?
+        pet.walker.enabled = false;
+        ArduinoInput.OnMotionDetected += MotionDetected;
     }
 
-    public override void OnStateExit() { }
+    public override void OnStateExit() {
+        pet.walker.enabled = true;
+        ArduinoInput.OnMotionDetected -= MotionDetected;
+    }
+
+    public void MotionDetected(int direction) {
+        // rotate towards direction
+    }
 }

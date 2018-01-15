@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class PetController : MonoBehaviour {
 
@@ -11,9 +12,13 @@ public class PetController : MonoBehaviour {
 
     public Vector3 sceneSize = new Vector3(5, 7, 5);
 
+    [SerializeField] private AudioClip[] wakeUpAudio;
+    [SerializeField] private AudioClip[] talkingAudio;
+
     [SerializeField] private VoiceCommand[] commands;
 
     private State state;
+    private AudioSource audioSrc;
 
     private SpeechManager speechManager;
     private string[] parsedCommands;
@@ -22,6 +27,7 @@ public class PetController : MonoBehaviour {
         SetState(new SleepState(this));
         speechManager = new SpeechManager(GetAllKeywords());
         speechManager.OnPhraseRecognized += ParseCommandToKeyword;
+        audioSrc = GetComponent<AudioSource>();
     }
 
     private string[] GetAllKeywords() {
@@ -58,6 +64,7 @@ public class PetController : MonoBehaviour {
 
     public void StartMinigame() {
         Debug.Log("start minigame");
+        SceneManager.LoadScene(1);
     }
 
     public void SetState(State s) {
@@ -68,20 +75,14 @@ public class PetController : MonoBehaviour {
         state.OnStateEnter();
     }
 
-    public void SetState(int stateIndex) {
-        switch(stateIndex) {
-            case 0:
-                SetState(new SleepState(this));
-                return;
-            case 1:
-                SetState(new IdleState(this));
-                return;
-            case 2:
-                SetState(new AttentiveState(this));
-                return;
-        }
+    public void WakeUp() {
+        if (state.GetType() != typeof(IdleState))
+            SetState(new IdleState(this));
+        audioSrc.PlayOneShot(wakeUpAudio.GetRandom());
+    }
 
-        Debug.LogWarning("No state matching " + stateIndex + " going to idle");
-        SetState(new IdleState(this));
+    public void PlayHappySound() {
+        if(!audioSrc.isPlaying)
+            audioSrc.PlayOneShot(talkingAudio.GetRandom());
     }
 }
