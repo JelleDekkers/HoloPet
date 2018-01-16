@@ -29,7 +29,7 @@ public class PathfinderMinigame : MonoBehaviour {
         walker.enabled = true;
         spline.endPoints[spline.Count - 1].position = walker.transform.position;
         BezierPoint p = spline.InsertNewPointAtWorldPosition(spline.Count, pos);
-        
+        p.precedingControlPointPosition *= 1.5f;
         Quaternion lookRot = Quaternion.LookRotation(p.position - walker.transform.position, Vector3.forward);
         Vector3 conversion = new Vector3(0, lookRot.eulerAngles.y - 90, 0);
         p.rotation = Quaternion.Euler(conversion);

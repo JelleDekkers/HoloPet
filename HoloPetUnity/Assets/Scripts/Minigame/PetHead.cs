@@ -23,7 +23,7 @@ public class PetHead : MonoBehaviour {
 
     [Range(0f, 0.06f)]
     public float relaxationAtEndPoints = 0.01f;
-    //public float movementLerpModifier = 10f;
+    public float movementLerpModifier = 10f;
     public float rotationLerpModifier = 10f;
     public bool lookForward = true;
     public Action OnTargetReached;
@@ -73,8 +73,8 @@ public class PetHead : MonoBehaviour {
         else
             targetPos = spline.MoveAlongSpline(ref progress, targetSpeed * Time.deltaTime);
 
-        cachedTransform.position = targetPos;
-        //cachedTransform.position = Vector3.Lerp( cachedTransform.position, targetPos, movementLerpModifier * Time.deltaTime );
+        //cachedTransform.position = targetPos;
+        cachedTransform.position = Vector3.Lerp( cachedTransform.position, targetPos, movementLerpModifier * Time.deltaTime );
 
         bool movingForward = (MovementSpeed > 0f) == isGoingForward;
 
