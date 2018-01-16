@@ -3,10 +3,16 @@ using System.IO.Ports;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum Direction {
+    Right,
+    Left,
+    Front
+}
+
 public class ArduinoInput : MonoBehaviour {
 
     public SerialPort serialPort = new SerialPort("COM3", 9600);
-    public static Action<int> OnMotionDetected;
+    public static Action<Direction> OnMotionDetected;
 
     void Start() { 
         serialPort.Open();
@@ -32,15 +38,15 @@ public class ArduinoInput : MonoBehaviour {
         } else if (arduinoValue == "1") {
             Debug.Log("Right Motion");
             if (OnMotionDetected != null)
-                OnMotionDetected(1);
+                OnMotionDetected(Direction.Right);
         } else if (arduinoValue == "2") {
             Debug.Log("Left Motion");
             if (OnMotionDetected != null)
-                OnMotionDetected(2);
+                OnMotionDetected(Direction.Left);
         } else if (arduinoValue == "3") {
             Debug.Log("Front Motion");
             if (OnMotionDetected != null)
-                OnMotionDetected(3);
+                OnMotionDetected(Direction.Front);
         }
     }
 }

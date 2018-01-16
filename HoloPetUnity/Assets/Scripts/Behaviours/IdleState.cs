@@ -5,8 +5,9 @@ using UnityEngine;
 
 public class IdleState : State {
 
-    private float waitTime = 1f;
-    private IEnumerator waitCoroutine;
+    private float waitTime = 8f;
+    private float timer;
+    private Coroutine waitCoroutine;
 
     public IdleState(PetController pet) : base(pet) { }
 
@@ -24,16 +25,21 @@ public class IdleState : State {
         ArduinoInput.OnMotionDetected -= MotionDetected;
     }
 
-    public void MotionDetected(int direction) {
-        pet.walker.enabled = false;
+    public void MotionDetected(Direction direction) {
+        pet.walker.OnTargetReached -= pet.pathFinder.SetNewRandomTarget;
         if (waitCoroutine != null)
-            pet.StopCoroutine(waitCoroutine);
-        pet.StartCoroutine(waitCoroutine);
-        // rotate towards direction
+            timer = 0;
+        else
+            waitCoroutine = pet.StartCoroutine(WaitTimerAfterMotionDetected());
+        pet.pathFinder.LookAtRealWorldPosition(direction);
     }
 
     private IEnumerator WaitTimerAfterMotionDetected() {
-        yield return new WaitForSeconds(waitTime);
-        pet.walker.enabled = true;
+        timer = 0;
+        while (timer < waitTime) {
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        pet.walker.OnTargetReached += pet.pathFinder.SetNewRandomTarget;
     }
 }

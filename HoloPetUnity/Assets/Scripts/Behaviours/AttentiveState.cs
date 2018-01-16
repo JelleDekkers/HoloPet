@@ -20,7 +20,7 @@ public class AttentiveState : State {
         ArduinoInput.OnMotionDetected -= MotionDetected;
     }
 
-    public void MotionDetected(int direction) {
+    public void MotionDetected(Direction direction) {
         // rotate towards direction
     }
 }

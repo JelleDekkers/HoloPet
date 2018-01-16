@@ -85,4 +85,16 @@ public class PetController : MonoBehaviour {
         if(!audioSrc.isPlaying)
             audioSrc.PlayOneShot(talkingAudio.GetRandom());
     }
+
+    //private void OnGUI() {
+    //    if (state.GetType() == typeof(IdleState)) {
+    //        IdleState s = state as IdleState;
+    //        if (GUI.Button(new Rect(10, 10, 100, 20), "right"))
+    //            s.MotionDetected(Direction.Right);
+    //        if (GUI.Button(new Rect(10, 30, 100, 20), "Left"))
+    //            s.MotionDetected(Direction.Left);
+    //        if (GUI.Button(new Rect(10, 50, 100, 20), "front"))
+    //            s.MotionDetected(Direction.Front);
+    //    }
+    //}
 }
