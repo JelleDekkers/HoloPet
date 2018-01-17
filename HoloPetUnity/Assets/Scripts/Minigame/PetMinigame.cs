@@ -119,6 +119,11 @@ namespace Minigame {
             OnGameOver();
             Head.SlowDown();
             PlayRandomGameOverSound();
+            StartCoroutine(MenuCountdown());
+        }
+
+        private IEnumerator MenuCountdown() {
+            yield return new WaitForSeconds(5);
             SceneManager.LoadScene(1);
         }
     }
