@@ -39,6 +39,7 @@ namespace Minigame {
             if(lifeTimer < timeUntillDestroy) {
                 lifeTimer += Time.deltaTime;
             } else {
+                enabled = false;
                 StartCoroutine(DestroyObject());
             }
         }

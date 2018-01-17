@@ -24,8 +24,9 @@ namespace Minigame {
         public static void Remove(Resource r) {
             if (allResources.Contains(r))
                 AllResources.Remove(r);
-            if (OnResourceRemoved != null) 
+            if (OnResourceRemoved != null) {
                 OnResourceRemoved.Invoke();
+            }
         }
 
         public static void Clear() {
