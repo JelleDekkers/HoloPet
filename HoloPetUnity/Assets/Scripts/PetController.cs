@@ -24,7 +24,7 @@ public class PetController : MonoBehaviour {
     private string[] parsedCommands;
 
     private void Start() {
-        SetState(new SleepState(this));
+        SetState(new IdleState(this));
         speechManager = new SpeechManager(GetAllKeywords());
         speechManager.OnPhraseRecognized += ParseCommandToKeyword;
         audioSrc = GetComponent<AudioSource>();

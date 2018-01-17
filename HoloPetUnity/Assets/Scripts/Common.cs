@@ -36,4 +36,12 @@ public static class Common {
         rndLocation.z += Random.Range(-range.z / 2, range.z / 2);
         return rndLocation;
     }
+
+    public static Vector3 GetRandomPositionWithinRangeNonDividing(Vector3 range, Vector3 centre) {
+        Vector3 rndLocation = centre;
+        rndLocation.x += Random.Range(-range.x, range.x);
+        rndLocation.y += Random.Range(-range.y, range.y);
+        rndLocation.z += Random.Range(-range.z, range.z);
+        return rndLocation;
+    }
 }

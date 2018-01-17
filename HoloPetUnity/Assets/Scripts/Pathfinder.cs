@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Pathfinder : MonoBehaviour {
 
-    public Vector3 sceneSize = new Vector3(5, 7, 5);
-    public Vector3 centrePos = new Vector3(0, 0, 3);
+    public Vector3 swimRange = new Vector3(5, 7, 5);
 
     [SerializeField] private BezierSpline spline;
     [SerializeField] public PetHead walker;
@@ -13,8 +12,12 @@ public class Pathfinder : MonoBehaviour {
     [SerializeField] private Transform right, left, front;
 
     public void SetNewRandomTarget() {
-        Vector3 rndPos = Common.GetRandomPositionWithinRange(sceneSize, centrePos);
+        Vector3 rndPos = Common.GetRandomPositionWithinRange(swimRange, transform.position);
         SetNewTargetPosition(rndPos);
+    }
+
+    private void OnDrawGizmos() {
+        Gizmos.DrawWireCube(transform.position, swimRange);
     }
 
     public void SetNewTargetPosition(Vector3 pos) {
