@@ -58,18 +58,18 @@ namespace Minigame {
                 happyCount++;
                 if (happyCount == happyCountNeededToWin)
                     GameOver();
-                else
-                    PlayRandomHappySound();
+                //else
+                    //PlayRandomHappySound();
                 Head.MovementSpeed = movementSpeedOnHappy;
             } else {
                 if (happyCount > 1)
                     happyCount -= 2;
                 if (resource.emotion == Emotion.Angry) {
                     Head.MovementSpeed = movementSpeedOnAngry;
-                    PlayRandomAngrySound();
+                    //PlayRandomAngrySound();
                 } else {
                     Head.MovementSpeed = movementSpeedOnSad;
-                    PlayRandomSadSound();
+                    //PlayRandomSadSound();
                 }
             }
         }
