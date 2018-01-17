@@ -27,6 +27,7 @@ public class IdleState : State {
 
     public void MotionDetected(Direction direction) {
         pet.walker.OnTargetReached -= pet.pathFinder.SetNewRandomTarget;
+        pet.animController.PlayAnimationLooping("Looking");
         if (waitCoroutine != null)
             timer = 0;
         else
@@ -35,6 +36,7 @@ public class IdleState : State {
     }
 
     private IEnumerator WaitTimerAfterMotionDetected() {
+        pet.animController.PlayAnimationOnce("Default");
         timer = 0;
         while (timer < waitTime) {
             timer += Time.deltaTime;
